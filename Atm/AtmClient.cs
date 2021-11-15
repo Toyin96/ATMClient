@@ -102,7 +102,9 @@ namespace Atm
         {
             if (_AccountChecker(recipientAccount))
             {
+                Accounts[Pan] -= amount;
                 Accounts[recipientAccount] += amount;
+                
                 var stan = _GenerateCode();
                 _CustomersStanDetails.Add(stan, $"user initiated a transfer of {amount}");
                 return $"Deposit of ${amount} has been sent to {recipientAccount}.\nNew balance is {Accounts[recipientAccount]}";
