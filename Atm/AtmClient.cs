@@ -14,9 +14,8 @@ namespace Atm
         private string _GenerateCode()
         {
             StringBuilder bankCode = new StringBuilder(8);
-            bankCode.Append("TOY");
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 bankCode.Append(Convert.ToString(_random.Next(0, 9)));
             }
@@ -68,15 +67,14 @@ namespace Atm
             }
         }
 
-        public string CheckBalance(string Pan, string cardPin)
+        public string CheckBalance(string pan, string cardPin)
         {
-            if (_AccountChecker(Pan))
+            if (_AccountChecker(pan))
             {
-                var balance = Accounts[Pan];
                 var stan = _GenerateCode();
-                _CustomersStanDetails.Add(stan, $"user changed cardpin to {cardPin}");
+                _CustomersStanDetails.Add(stan, $"user tried checking balance on account {pan}");
                 
-                return $"Your balance is {balance}";
+                return $"Your balance is {Accounts[pan]}";
             }
 
             return "No account found";
@@ -115,5 +113,12 @@ namespace Atm
             _CustomersStanDetails.Add(stan, $"user opened an account with name: {accountName}");
             return $"Success! your account has been created. You can now bank with us henceforth";
         }
+    }
+
+    class AtmActionDelegate
+    {
+        public delegate string AtmAction(string pan, decimal amount);
+        
+        AtmAction withdrawDelegate
     }
 }
