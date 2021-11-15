@@ -8,6 +8,8 @@ namespace Atm
 {
     public class AtmClient: Bank, IBankable, IDepositable, IAccountOpenable
     {
+        #region MyRegion
+        
         private Dictionary<string, string> _CustomersStanDetails = new Dictionary<string, string>();
         private readonly Random _random = new Random();
 
@@ -65,6 +67,8 @@ namespace Atm
                     
                 }
             }
+
+            return "s";
         }
 
         public string CheckBalance(string pan, string cardPin)
@@ -113,12 +117,21 @@ namespace Atm
             _CustomersStanDetails.Add(stan, $"user opened an account with name: {accountName}");
             return $"Success! your account has been created. You can now bank with us henceforth";
         }
-    }
 
-    class AtmActionDelegate
-    {
-        public delegate string AtmAction(string pan, decimal amount);
-        
-        AtmAction withdrawDelegate
+        public delegate string PerformAtmActions(string pan, string cardPin, decimal amount);
+
+        public delegate string AtmInquirer(string pan, string cardPin);
+        public delegate string OpenAccountViaAtm(string acountName, decimal cash);
+
+        public void InitiateAtmProcesses()
+        {
+            PerformAtmActions withdrawMoney = WithdrawCash;
+            PerformAtmActions depositMoney = DepositCash;
+            AtmInquirer changeAccountPin = ChangePin;
+            AtmInquirer checkAccountBalance = CheckBalance;
+            OpenAccountViaAtm createAccount = OpenAccount;
+        }
+
+        #endregion
     }
 }
