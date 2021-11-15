@@ -2,6 +2,6 @@ namespace Atm.interfaces
 {
     public interface IAccountOpenable
     {
-        public string OpenAccount()
+        public string OpenAccount(string accountName, decimal deposit);
     }
 }
