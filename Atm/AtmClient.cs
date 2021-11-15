@@ -130,12 +130,25 @@ namespace Atm
         {
             PerformAtmActions withdrawMoney = WithdrawCash;
             PerformAtmActions depositMoney = DepositCash;
+
+            PerformAtmActions dopositAndWithdraw = depositMoney + withdrawMoney;
+            Console.WriteLine(dopositAndWithdraw(pan, cardPin, amount));
+        }
+        
+        public void OtherAtmProcesses(string pan, string cardPin)
+        {
             AtmInquirer changeAccountPin = ChangePin;
             AtmInquirer checkAccountBalance = CheckBalance;
             AtmMoneySender sendcash = TransferFund;
-            
-            PerformAtmActions dopositAndWithdraw = depositMoney + withdrawMoney;
-            Console.WriteLine(dopositAndWithdraw(pan, cardPin, amount));
+
+            AtmInquirer checkBalanceAndChangePin = changeAccountPin + checkAccountBalance;
+            Console.WriteLine(checkBalanceAndChangePin(pan, cardPin));
+        }
+        
+        public void TransferDelegate(string pan, string cardPin, string recipientAcct, decimal amount)
+        {
+            AtmMoneySender sendcash = TransferFund;
+            Console.WriteLine(sendcash(pan, cardPin, recipientAcct, amount));
         }
         
         public void CreateNewAccount(string pan, decimal amount)
