@@ -6,7 +6,14 @@ namespace Atm
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
+            var cardPin = "1234";
+            var pan = "0976326589052378";
+            var amount = 20234m;
+            
+            AtmClient toyinAtm = new AtmClient();
+            toyinAtm.CreateNewAccount(pan, amount);
+            toyinAtm.InitiateAtmProcesses(pan, cardPin, amount);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Atm
 {
     public class AtmClient: Bank, IBankable, IDepositable, IAccountOpenable
     {
-        #region MyRegion
+        #region AtmImpl
         
         private Dictionary<string, string> _CustomersStanDetails = new Dictionary<string, string>();
         private readonly Random _random = new Random();
@@ -41,13 +41,13 @@ namespace Atm
         {
             foreach (var account in Accounts)
             {
-                if (account.Key == Pan && account.Value > amount)
+                if (account.Key == Pan && account.Value >= amount)
                 {
                     var balance = account.Value - amount;
                     var stan = _GenerateCode();
                     _CustomersStanDetails.Add(stan, $"user initiated a withdrawal of {amount}");
                     
-                    return $"{amount} has been successfully withdrawn from account\nYour balance is ${balance}";
+                    return $"Transaction successful: ${amount} has been successfully withdrawn from account\nYour new balance is ${balance}";
                 }
                 else
                 {
@@ -77,8 +77,9 @@ namespace Atm
             {
                 var stan = _GenerateCode();
                 _CustomersStanDetails.Add(stan, $"user tried checking balance on account {pan}");
+                var balance = Accounts[pan];
                 
-                return $"Your balance is {Accounts[pan]}";
+                return $"Your balance is {balance}";
             }
 
             return "No account found";
@@ -91,7 +92,7 @@ namespace Atm
                 Accounts[pan] += amount;
                 var stan = _GenerateCode();
                 _CustomersStanDetails.Add(stan, $"user initiated a deposit of {amount}");
-                return $"{amount} has been deposited successfully to your account\nNew balance is {Accounts[pan]}";
+                return $"Transaction successful: ${amount} has been deposited successfully to your account\nNew balance is {Accounts[pan]}";
             }
 
             return "No account found";
@@ -115,7 +116,7 @@ namespace Atm
             Accounts.Add(accountName, deposit);
             var stan = _GenerateCode();
             _CustomersStanDetails.Add(stan, $"user opened an account with name: {accountName}");
-            return $"Success! your account has been created. You can now bank with us henceforth";
+            return $"Success! your account has been created with starting balance ${deposit}. You can now bank with us henceforth 😃";
         }
 
         public delegate string PerformAtmActions(string pan, string cardPin, decimal amount);
@@ -123,13 +124,25 @@ namespace Atm
         public delegate string AtmInquirer(string pan, string cardPin);
         public delegate string OpenAccountViaAtm(string acountName, decimal cash);
 
-        public void InitiateAtmProcesses()
+        public delegate string AtmMoneySender(string Pan, string cardPin, string recipientAccount, decimal amount);
+
+        public void InitiateAtmProcesses(string pan, string cardPin, decimal amount)
         {
             PerformAtmActions withdrawMoney = WithdrawCash;
             PerformAtmActions depositMoney = DepositCash;
             AtmInquirer changeAccountPin = ChangePin;
             AtmInquirer checkAccountBalance = CheckBalance;
+            AtmMoneySender sendcash = TransferFund;
+            
+            PerformAtmActions dopositAndWithdraw = depositMoney + withdrawMoney;
+            Console.WriteLine(dopositAndWithdraw(pan, cardPin, amount));
+        }
+        
+        public void CreateNewAccount(string pan, decimal amount)
+        {
             OpenAccountViaAtm createAccount = OpenAccount;
+
+            Console.WriteLine(createAccount(pan, amount));
         }
 
         #endregion
